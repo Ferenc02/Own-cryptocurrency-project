@@ -1,5 +1,25 @@
 {
+  "name": "own-cryptocurrency-project",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Ferenc02/Own-cryptocurrency-project#readme",
+  "bugs": {
+    "url": "https://github.com/Ferenc02/Own-cryptocurrency-project/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ferenc02/Own-cryptocurrency-project.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "ws": "^8.18.2"
-  }
+  },
+  "devDependencies": {}
 }
