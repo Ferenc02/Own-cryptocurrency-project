@@ -15,11 +15,12 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "dev:master": "nodemon app.js --master",
+    "dev:node": "nodemon app.js --node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "dotenv": "^16.5.0",
     "ws": "^8.18.2"
-  },
-  "devDependencies": {}
+  }
 }

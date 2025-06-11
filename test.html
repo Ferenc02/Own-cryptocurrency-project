@@ -37,7 +37,7 @@
         document
           .getElementById("connectButton")
           .addEventListener("click", () => {
-            socket = new WebSocket("ws://localhost:6001");
+            socket = new WebSocket("ws://172.20.32.1:8080");
 
             socket.onopen = () => {
               document.getElementById("status").textContent =
