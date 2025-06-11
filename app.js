@@ -1,24 +1,13 @@
-import WebSocket, { WebSocketServer } from "ws";
+import { initializeP2PServer } from "./src/node/p2p.mjs";
+import { connectToPeers } from "./src/node/p2p.mjs";
 
-const wss = new WebSocketServer({ port: 8080 });
+const HTTP_PORT = process.argv[2] || 3001;
+const P2P_PORT = process.argv[3] || 6001;
+const PEERS = process.argv.slice(4); // all remaining arguments
 
-let nodeCount = 0;
+console.log(`HTTP_PORT: ${HTTP_PORT}`);
+console.log(`P2P_PORT: ${P2P_PORT}`);
+console.log(`PEERS: ${PEERS} \n`);
 
-wss.on("connection", (ws) => {
-  nodeCount++;
-  console.log(`Node count: ${nodeCount}`);
-
-  ws.on("message", (message) => {
-    console.log(`Received message: ${message}`);
-    // Echo the message back to the client
-    ws.send(`Server received: ${message}`);
-  });
-
-  ws.on("close", () => {
-    console.log("Client disconnected");
-    nodeCount--;
-  });
-
-  ws.send("Welcome to awesome WebSocket server!");
-});
-console.log("🚀 WebSocket server is running on ws://localhost:8080 🚀");
+initializeP2PServer(P2P_PORT);
+connectToPeers(PEERS);
