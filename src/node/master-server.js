@@ -6,9 +6,10 @@ dotenv.config();
 const masterServer = `${process.env.NODE_MASTER_SERVER_URL}`; // Master server address
 const peers = [];
 
-const wss = new WebSocketServer(
-  masterServer ? { port: 8080 } : { noServer: true }
-);
+const wss = new WebSocketServer({
+  port: 8080,
+  host: "0.0.0.0",
+});
 
 const startMasterServer = () => {
   console.log(`🌐 Master Server running on ${masterServer} 🌐`);

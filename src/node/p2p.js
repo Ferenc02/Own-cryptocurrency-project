@@ -28,6 +28,21 @@ const registerWithMasterServer = () => {
       })
     );
   });
+  ws.on("message", (message) => {
+    if (typeof message === "string") {
+      try {
+        const data = JSON.parse(message);
+        if (data.type === "welcome") {
+          console.log("🥰 Welcome message from master server:", data.message);
+          console.log("Connected peers:", data.peers);
+        } else {
+          console.log("Received message from master server:", data);
+        }
+      } catch (error) {
+        console.error("Error parsing message from master server:", error);
+      }
+    }
+  });
   ws.on("error", (error) => {
     console.error("❌ Error connecting to master server:", error);
   });
