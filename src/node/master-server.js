@@ -4,52 +4,72 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const masterServer = `${process.env.NODE_MASTER_SERVER_URL}`; // Master server address
+const masterPort = process.env.NODE_MASTER_SERVER_PORT; // Master server port
 const peers = [];
 
-const wss = new WebSocketServer({
-  port: 8080,
-  host: "0.0.0.0",
-});
-
 const startMasterServer = () => {
-  console.log(`🌐 Master Server running on ${masterServer} 🌐`);
+  const wss = new WebSocketServer({
+    port: masterPort,
+    host: masterServer,
+  });
+
+  console.log(
+    `🌐 Master Server running on ws://${masterServer}:${masterPort} 🌐`
+  );
 
   wss.on("connection", (ws) => {
-    console.log("🔗 New node connected to master ");
-
     ws.on("message", (message) => {
-      if (typeof message === "string") {
-        try {
-          const data = JSON.parse(message);
-          if (data.type === "register") {
-            console.log("Node registered:", data.message);
-            peers.push(ws);
-          } else {
-            console.log("Received message:", data);
-          }
-        } catch (error) {
-          console.error("Error parsing message:", error);
+      try {
+        const data = JSON.parse(message);
+        if (data.type === "register") {
+          console.log("🔗 New node connected to master ");
+
+          peers.push({
+            address: data.address,
+            port: data.port,
+            ws: ws,
+          });
+
+          sendPeersList();
+        } else {
+          console.log("🔗 New connection connected to master ");
         }
+      } catch (error) {
+        console.error("Error parsing message:", error);
       }
     });
 
-    ws.send(
-      JSON.stringify({
-        type: "welcome",
-        message: "🥰 Welcome to the master server! 🥰",
-        peers: peers.map((peer) => ({
-          address: peer.address,
-          port: peer.port,
-        })),
-      })
-    );
     ws.on("close", () => {
       console.log("❌ Node disconnected from master");
-      const index = peers.indexOf(ws);
+      const index = peers.findIndex((peer) => peer.ws === ws);
       if (index !== -1) {
         peers.splice(index, 1);
       }
+
+      sendPeersList();
     });
+  });
+};
+
+let sendPeersList = () => {
+  console.log(
+    "📡 Sending peers list to all connected nodes... " + peers.length
+  );
+  const peersList = JSON.stringify({
+    type: "welcome",
+    message: "🥰 Welcome to the master server! 🥰",
+    peers: peers.map((peer) => ({
+      address: peer.address,
+      port: peer.port,
+      id: `${peer.address}:${peer.port}`,
+      ws: peer.ws.readyState === WebSocket.OPEN ? "connected" : "disconnected",
+    })),
+  });
+
+  peers.forEach((peer) => {
+    if (peer.ws.readyState === WebSocket.OPEN) {
+      peer.ws.send(peersList);
+    }
   });
 };
 

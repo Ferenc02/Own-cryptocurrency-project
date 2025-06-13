@@ -9,5 +9,6 @@ if (args.includes("--master")) {
 }
 
 if (args.includes("--node")) {
-  initializeP2PServer(6000);
+  let randomPort = Math.floor(Math.random() * (65535 - 1024 + 1)) + 1024;
+  initializeP2PServer(randomPort);
 }

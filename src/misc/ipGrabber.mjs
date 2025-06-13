@@ -1,3 +1,4 @@
+import os from "os";
 const getLocalIP = () => {
   const interfaces = os.networkInterfaces();
   for (const interfaceName in interfaces) {
