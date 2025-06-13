@@ -33,6 +33,8 @@ const startMasterServer = () => {
           });
 
           sendPeersList();
+        } else if (data.type === "requestPeersList") {
+          sendPeersList();
         } else {
           console.log("🔗 New connection connected to master ");
         }

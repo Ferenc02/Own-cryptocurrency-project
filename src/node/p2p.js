@@ -6,6 +6,7 @@ import getLocalIP from "../misc/ipGrabber.mjs";
 let server;
 let localIP;
 let localPort;
+let ws;
 const masterServer = `ws://${process.env.NODE_MASTER_SERVER_URL}:${process.env.NODE_MASTER_SERVER_PORT}`; // Master server address
 
 const initializeP2PServer = (port) => {
@@ -33,7 +34,7 @@ const initializeP2PServer = (port) => {
 };
 
 const registerWithMasterServer = () => {
-  const ws = new WebSocket(masterServer);
+  ws = new WebSocket(masterServer);
 
   ws.on("open", () => {
     console.log("🔗 Connected to master server");
@@ -64,6 +65,14 @@ const registerWithMasterServer = () => {
   ws.on("error", (error) => {
     console.error("❌ Error connecting to master server:", error);
   });
+};
+
+export const requestPeersList = () => {
+  ws.send(
+    JSON.stringify({
+      type: "requestPeersList",
+    })
+  );
 };
 
 export default initializeP2PServer;
