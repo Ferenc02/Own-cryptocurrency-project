@@ -17,6 +17,7 @@
   "scripts": {
     "dev:master": "nodemon app.js --master",
     "dev:node": "nodemon app.js --node",
+    "dev:ip": "nodemon app.js --ip",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

@@ -21,6 +21,8 @@ const startMasterServer = () => {
     ws.on("message", (message) => {
       try {
         const data = JSON.parse(message);
+
+        // If node registers itself as a pper
         if (data.type === "register") {
           console.log("🔗 New node connected to master ");
 
