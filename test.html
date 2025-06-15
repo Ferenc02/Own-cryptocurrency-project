@@ -43,6 +43,13 @@
               document.getElementById("status").textContent =
                 "Status: Connected";
               document.getElementById("disconnectButton").disabled = false;
+
+              socket.send(
+                JSON.stringify({
+                  type: "requestPeersList",
+                  device: "web-client",
+                })
+              );
             };
 
             socket.onmessage = (event) => {

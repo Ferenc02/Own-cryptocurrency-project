@@ -34,7 +34,7 @@ const startMasterServer = () => {
 
           sendPeersList();
         } else if (data.type === "requestPeersList") {
-          sendPeersList();
+          sendPeersList(data.device === "web-client" ? true : false, ws);
         } else {
           console.log("🔗 New connection connected to master ");
         }
@@ -55,7 +55,7 @@ const startMasterServer = () => {
   });
 };
 
-let sendPeersList = () => {
+let sendPeersList = (deviceIsWeb, ws) => {
   console.log(
     "📡 Sending peers list to all connected nodes... " + peers.length
   );
@@ -70,11 +70,15 @@ let sendPeersList = () => {
     })),
   });
 
-  peers.forEach((peer) => {
-    if (peer.ws.readyState === WebSocket.OPEN) {
-      peer.ws.send(peersList);
-    }
-  });
+  if (deviceIsWeb) {
+    ws.send(peersList);
+  } else {
+    peers.forEach((peer) => {
+      if (peer.ws.readyState === WebSocket.OPEN) {
+        peer.ws.send(peersList);
+      }
+    });
+  }
 };
 
 export default startMasterServer;
