@@ -1,4 +1,6 @@
 import os from "os";
+import fs from "fs";
+import { exit } from "process";
 const getLocalIP = () => {
   const ipAddresses = [];
   const interfaces = os.networkInterfaces();
@@ -21,6 +23,18 @@ const getLocalIP = () => {
   }
 
   return null;
+};
+export const saveIPToEnv = () => {
+  const envPath = "./.env";
+  const localIP = getLocalIP();
+  if (localIP) {
+    const envContent = `NODE_MASTER_SERVER_URL=${localIP}\nNODE_MASTER_SERVER_PORT=8080`;
+    fs.writeFileSync(envPath, envContent, { flag: "w" });
+    console.log(`Local IP saved to ${envPath}`);
+    process.exit(0);
+  } else {
+    console.error("No local IP found to save.");
+  }
 };
 
 export default getLocalIP;

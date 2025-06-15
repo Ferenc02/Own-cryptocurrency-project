@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import startMasterServer from "./src/node/master-server.js";
 import initializeP2PServer from "./src/node/p2p.js";
-import getLocalIP from "./src/misc/ipGrabber.mjs";
+import { saveIPToEnv } from "./src/misc/ipGrabber.mjs";
 const args = process.argv.slice(2);
 
 if (args.includes("--master")) {
@@ -15,5 +15,5 @@ if (args.includes("--node")) {
 }
 
 if (args.includes("--ip")) {
-  console.log(getLocalIP());
+  saveIPToEnv();
 }
