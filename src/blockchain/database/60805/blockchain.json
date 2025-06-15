@@ -1,0 +1,12 @@
+[
+  {
+    "index": 0,
+    "timestamp": "2025-06-15T07:49:57.308Z",
+    "data": {
+      "data": "Genesis Block"
+    },
+    "previousHash": "0",
+    "nonce": 275,
+    "hash": "005b5f5397f6aca54dd63df57b603157813d90285c8bebf0d1b32d7016129a29"
+  }
+]

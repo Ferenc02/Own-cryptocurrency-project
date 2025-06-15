@@ -5,8 +5,8 @@ import { logError } from "./logger.js";
 
 let blockchain = null;
 
-export async function initialize() {
-  const data = await loadBlockchain();
+export async function initialize(PORT) {
+  const data = await loadBlockchain(PORT);
   console.log("🚀 Initializing Blockchain... 🚀");
 
   blockchain = new Blockchain();
@@ -17,7 +17,7 @@ export async function initialize() {
       "🚀 No existing blockchain data found, creating genesis block.🚀 \n"
     );
     blockchain.createGenesisBlock();
-    await saveBlockchain(blockchain.chain);
+    await saveBlockchain(blockchain.chain, PORT);
   }
 }
 

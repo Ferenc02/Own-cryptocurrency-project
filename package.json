@@ -16,7 +16,7 @@
   "main": "app.js",
   "scripts": {
     "dev:master": "nodemon app.js --master",
-    "dev:node": "nodemon app.js --node",
+    "dev:node": "node app.js --node",
     "dev:ip": "node app.js --ip",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

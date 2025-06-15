@@ -20,7 +20,7 @@ if (args.includes("--node")) {
 
   const app = express();
   app.use(express.json());
-  await initialize();
+  await initialize(randomPort);
 
   app.use("/api/blocks", router);
 
