@@ -95,6 +95,16 @@ footer {
   box-shadow: 0 0 10px var(--color-accent-cyan);
 }
 
+.button {
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  color: var(--color-text-primary);
+}
+.button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 /* nav stuff */
 
 header {
@@ -133,6 +143,55 @@ header nav ul {
   margin: 0;
   padding: 0;
   flex-wrap: wrap;
+}
+
+/* Login section */
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: var(--glass-bg);
+  border-radius: 1rem;
+  border: var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  height: fit-content;
+  gap: 1rem;
+}
+.auth-form h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-text-primary);
+}
+.auth-form .form-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.auth-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color-text-primary);
+}
+.auth-form input {
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-primary);
+}
+
+.hidden {
+  display: none;
 }
 
 /* Hero section */
