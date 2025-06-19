@@ -58,7 +58,7 @@ body {
   display: flex;
   flex-direction: column;
 
-  background-image: url("../images/bg2.jpg");
+  background-image: url("../images/bg5.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -73,11 +73,11 @@ main {
 }
 
 footer {
-  background-color: var(--glass-bg);
   color: var(--color-text-muted);
   text-align: center;
   padding: 1rem;
   font-size: 0.875rem;
+  animation: fadeIn 0.5s ease-in-out;
 }
 
 .glass-panel {
@@ -115,15 +115,14 @@ a {
 header {
   width: 100%;
   z-index: 1000;
-  background-color: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  border-bottom: var(--glass-border);
 
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
   flex-wrap: wrap;
+
+  animation: fadeInFromTop 0.5s ease-in-out;
 }
 header nav {
   display: flex;
@@ -170,6 +169,7 @@ header nav ul {
   margin: auto;
   height: fit-content;
   gap: 1rem;
+  animation: fadeIn 0.5s ease-in-out;
 }
 .auth-form h2 {
   font-size: 1.5rem;
@@ -212,6 +212,7 @@ header nav ul {
 }
 .hero-content {
   width: 50%;
+  animation: fadeIn 0.5s ease-in-out;
 }
 .hero-content h2 {
   font-size: 1.5rem;
@@ -322,5 +323,31 @@ header nav ul {
   }
   header nav a {
     margin-bottom: 0.5rem;
+  }
+
+  .auth-form {
+    width: 90%;
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+}
+
+@keyframes fadeInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
