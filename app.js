@@ -15,6 +15,7 @@ import mongoSanitize from "express-mongo-sanitize";
 
 import connectDb from "./src/backend/database/db.js";
 
+// Rate limiting to prevent ddos
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100,
@@ -23,12 +24,15 @@ const limiter = rateLimit({
   message: "Why so many requests? Please slow down.",
 });
 
+// Command line arguments to start different servers
 const args = process.argv.slice(2);
 
+// Start the master server if --master flag is provided
 if (args.includes("--master")) {
   startMasterServer();
 }
 
+// Start the P2P server if --node flag is provided
 if (args.includes("--node")) {
   let randomPort = Math.floor(Math.random() * (65535 - 1024 + 1)) + 1024;
   initializeP2PServer(randomPort);
@@ -56,10 +60,12 @@ if (args.includes("--node")) {
   });
 }
 
+// Save the IP address to .env file if --ip flag is provided
 if (args.includes("--ip")) {
   saveIPToEnv();
 }
 
+// Start the backend server if --backend flag is provided
 if (args.includes("--backend")) {
   connectDb();
 

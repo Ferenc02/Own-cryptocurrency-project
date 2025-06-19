@@ -11,3 +11,24 @@
 | ws://:6001    |  | ws://:6002    |   | ws://:6003      |
 +---------------+  +---------------+   +-----------------+
          ↔ P2P WS         ↔ P2P WS         ↔ P2P WS
+
+Architecture Overview
+---------------------
+
+This system uses a peer-to-peer (P2P) architecture where each node communicates with others using WebSockets (ws://). Each node listens on a unique port (e.g., 6001, 6002, 6003).
+
+Master Peer Role
+----------------
+- The master peer acts as a directory service for the network.
+- It maintains a list of all active nodes and their WebSocket addresses.
+- When a new node wants to join the network, it first connects to the master peer to retrieve the list of existing nodes.
+- After obtaining the list, the new node establishes direct P2P WebSocket connections with other nodes.
+- This approach allows dynamic discovery and connection of peers, supporting network scalability and resilience.
+
+Node Communication
+------------------
+- Nodes communicate directly with each other using P2P WebSocket connections.
+- Each node can broadcast messages or data to its peers.
+- If a node disconnects, the master peer updates the node list and notifies other nodes as needed.
+
+This architecture enables decentralized communication while using the master peer for efficient node discovery and management.
