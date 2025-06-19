@@ -9,8 +9,19 @@ import errorHandler from "./src/blockchain/middlewares/errorHandler.js";
 import router from "./src/blockchain/routes/blockRoutes.js";
 import userRoutes from "./src/backend/routes/userRoutes.js";
 import cors from "cors";
+import { rateLimit } from "express-rate-limit";
+import { xss } from "express-xss-sanitizer";
+import mongoSanitize from "express-mongo-sanitize";
 
 import connectDb from "./src/backend/database/db.js";
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 100,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: "Why so many requests? Please slow down.",
+});
 
 const args = process.argv.slice(2);
 
@@ -23,6 +34,10 @@ if (args.includes("--node")) {
   initializeP2PServer(randomPort);
 
   const app = express();
+  app.use(cors());
+  app.use(xss());
+  app.use(mongoSanitize());
+  app.use(limiter);
   app.use(express.json());
   await initialize(randomPort);
 
@@ -50,6 +65,9 @@ if (args.includes("--backend")) {
 
   const app = express();
   app.use(cors());
+  app.use(xss());
+  app.use(mongoSanitize());
+  app.use(limiter);
   app.use(express.json());
   app.use("/api", userRoutes);
 
