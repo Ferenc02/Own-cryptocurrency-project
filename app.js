@@ -7,6 +7,10 @@ import express from "express";
 import { initialize } from "./src/blockchain/services/blockchainService.js";
 import errorHandler from "./src/blockchain/middlewares/errorHandler.js";
 import router from "./src/blockchain/routes/blockRoutes.js";
+import userRoutes from "./src/backend/routes/userRoutes.js";
+import cors from "cors";
+
+import connectDb from "./src/backend/database/db.js";
 
 const args = process.argv.slice(2);
 
@@ -39,4 +43,21 @@ if (args.includes("--node")) {
 
 if (args.includes("--ip")) {
   saveIPToEnv();
+}
+
+if (args.includes("--backend")) {
+  connectDb();
+
+  const app = express();
+  app.use(cors());
+  app.use(express.json());
+  app.use("/api", userRoutes);
+
+  app.listen(6200, () => {
+    console.log("Backend server running on  http://localhost:6200");
+  });
+
+  app.get("/", (req, res) => {
+    res.status(200).json({ message: "Welcome to the backend server" });
+  });
 }

@@ -1,6 +1,69 @@
 let urlHash = window.location.hash;
 const loginForm = document.querySelector(".login-form");
 const registerForm = document.querySelector(".register-form");
+
+const URL = "http://localhost:6200/api/users";
+const postData = async (url = "", data = {}) => {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: JSON.stringify(data),
+  });
+  return response.json();
+};
+
+const registerUser = async (event) => {
+  event.preventDefault();
+  const formData = new FormData(event.target);
+  const data = Object.fromEntries(formData.entries());
+  try {
+    const response = await postData(URL, data);
+
+    if (response.message === "User registered") {
+      console.log("User registered successfully");
+      alert("User registered successfully");
+    } else {
+      console.error("Registration failed:", response);
+      alert("Registration failed: " + response.message);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+const loginUser = async (event) => {
+  event.preventDefault();
+  const formData = new FormData(event.target);
+  const data = Object.fromEntries(formData.entries());
+  try {
+    const response = await postData(URL, data);
+
+    if (response.message === "Login successful") {
+      console.log("Login successful");
+      alert("Login successful");
+      // Redirect or perform further actions
+    } else {
+      console.error("Login failed:", response);
+      alert("Login failed: " + response.message);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+registerForm.addEventListener("submit", (event) => {
+  registerUser(event);
+});
+loginForm.addEventListener("submit", (event) => {
+  loginUser(event);
+});
+
 window.addEventListener("hashchange", (event) => {
   loadForm();
 });
