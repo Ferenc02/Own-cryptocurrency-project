@@ -12,7 +12,7 @@ const toggleProfileMenu = () => {
 };
 const getProfileDetails = () => {
   alert(
-    `Profile Details:\nUsername: ${window.user.username}\nEmail: ${window.user.email}\nID: ${window.user.id}`
+    `Profile Details:\nUsername: ${window.user.username}\nEmail: ${window.user.email}\nID: ${window.user.id}\nWallet Address: ${window.user.wallet.address}\nRole: ${window.user.role}`
   );
 };
 const logoutProfile = () => {
