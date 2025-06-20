@@ -14,8 +14,154 @@
     <link rel="stylesheet" href="style/style.css" />
 
     <script src="js/userSession.js" defer></script>
+    <script src="js/home.js" defer></script>
   </head>
   <body>
-    <main></main>
+    <header>
+      <h2>TriloCoin</h2>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+          <li class="profile">
+            <button class="profile-button">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+              >
+                <path
+                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                />
+              </svg>
+            </button>
+            <div class="profile-menu hidden">
+              <button class="profile-menu-item" id="user-details">
+                User Details
+              </button>
+              <button class="profile-menu-item" id="logout">Logout</button>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div class="home-container">
+        <div class="balance-transactions-container">
+          <div class="wallet-balance-container glass-container">
+            <div class="left">
+              <h2><span id="wallet-balance-username"></span> Wallet</h2>
+              <div class="wallet-address" id="wallet-address">
+                <span>0x1234567890abcdef1234567890abcdef12345678</span>
+              </div>
+              <div class="wallet-balance" id="wallet-balance">
+                <span class="amount">0.00</span>
+                <span class="currency">TRC</span>
+              </div>
+              <h3>Current balance</h3>
+
+              <div class="wallet-actions">
+                <button class="button" id="deposit-button">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    height="24"
+                  >
+                    <path
+                      d="M12 2a1 1 0 0 1 1 1v8.59l2.3-2.3a1 1 0 1 1 1.4 1.42l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 1 1 1.4-1.42l2.3 2.3V3a1 1 0 0 1 1-1zm-7 15a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Deposit
+                </button>
+                <button class="button" id="send-button">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    height="24"
+                  >
+                    <path
+                      d="M12 22a1 1 0 0 1-1-1v-8.59l-2.3 2.3a1 1 0 1 1-1.4-1.42l4-4a1 1 0 0 1 1.4 0l4 4a1 1 0 1 1-1.4 1.42l-2.3-2.3V21a1 1 0 0 1-1 1zm-7-15a1 1 0 0 1 1-1h12a1 1 0 1 1 0 2H6a1 1 0 0 1-1-1z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Send
+                </button>
+              </div>
+            </div>
+            <div class="right">
+              <button class="button" id="all-blocks-button">
+                <div class="svg-container">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    height="24"
+                  >
+                    <rect x="3" y="3" width="4" height="4" />
+                    <rect x="10" y="3" width="4" height="4" />
+                    <rect x="17" y="3" width="4" height="4" />
+                    <rect x="3" y="10" width="4" height="4" />
+                    <rect x="10" y="10" width="4" height="4" />
+                    <rect x="17" y="10" width="4" height="4" />
+                    <rect x="3" y="17" width="4" height="4" />
+                    <rect x="10" y="17" width="4" height="4" />
+                    <rect x="17" y="17" width="4" height="4" />
+                  </svg>
+                </div>
+                Mine Block
+              </button>
+            </div>
+          </div>
+
+          <div class="transactions-container glass-container">
+            <h2>All Transactions</h2>
+            <table id="transactions-table">
+              <thead>
+                <tr>
+                  <th>Trilo</th>
+                  <th>Sender</th>
+                  <th>Receiver</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="transactions-body">
+                <!-- Transactions will be dynamically inserted here -->
+
+                <tr>
+                  <td colspan="4" class="no-transactions">
+                    No transactions available.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="blocks-container glass-container">
+          <h2>All Blocks</h2>
+          <table id="blocks-table">
+            <thead>
+              <tr>
+                <th>Block Number</th>
+                <th>Hash</th>
+                <th>Previous Hash</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="blocks-body">
+              <!-- Blocks will be dynamically inserted here -->
+
+              <tr>
+                <td colspan="4" class="no-blocks">No blocks available.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
   </body>
 </html>

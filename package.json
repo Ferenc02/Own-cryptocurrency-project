@@ -18,7 +18,7 @@
     "dev:master": "nodemon app.js --master",
     "dev:node": "node app.js --node",
     "dev:ip": "node app.js --ip",
-    "dev:backend": "nodemon app.js --backend",
+    "dev:backend": "node app.js --backend",
     "dev:web": "nodemon app.js --web",
     "dev:help": "node app.js --help",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -19,6 +19,7 @@
 
   /*  Glassmorphism Effect */
   --glass-blur: blur(12px);
+  --glass-blur-light: blur(4px);
   --glass-border: 1px solid var(--color-glass-border);
   --glass-bg: var(--color-glass);
 
@@ -147,6 +148,61 @@ header nav ul {
   margin: 0;
   padding: 0;
   flex-wrap: wrap;
+  align-items: center;
+}
+
+header .profile-button {
+  background: var(--glass-bg);
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+header .profile-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+header .profile-button svg {
+  width: 2rem;
+  height: 2rem;
+  fill: var(--color-text-primary);
+  transition: fill 0.3s ease;
+}
+
+header .profile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+header .profile-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+header .profile-menu button {
+  display: block;
+  text-wrap: nowrap;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  color: var(--color-text-primary);
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+header .profile-menu button:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* Login section */
@@ -295,6 +351,129 @@ header nav ul {
   width: 50px;
   height: auto;
   margin-left: 1rem;
+}
+
+/* Homepage stuff */
+.home-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.balance-transactions-container {
+  width: 40%;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  box-sizing: border-box;
+}
+.glass-container {
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  backdrop-filter: var(--glass-blur-light);
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+.wallet-balance-container {
+  display: flex;
+  gap: 0.5rem;
+}
+.wallet-balance-container .left {
+  width: 50%;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+}
+.wallet-balance-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-body);
+}
+.wallet-balance {
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--color-text-primary);
+  font-family: "Courier New", Courier, monospace;
+}
+.wallet-balance-container h3 {
+  font-size: 1rem;
+  color: var(--color-text-muted);
+  font-weight: 400;
+  font-family: var(--font-body);
+  margin-bottom: 0.5rem;
+}
+.wallet-balance-container button {
+  width: fit-content;
+}
+.wallet-balance-container .right {
+  width: 50%;
+  min-width: 100px;
+  display: flex;
+  align-items: end;
+  justify-content: end;
+}
+
+#all-blocks-button {
+  padding: 1rem 1.5rem;
+  font-size: 1.25rem;
+  display: flex;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  backdrop-filter: none;
+  flex-wrap: wrap;
+}
+#all-blocks-button .svg-container {
+  fill: var(--color-text-primary);
+  border: 1px solid var(--color-glass-border);
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  backdrop-filter: var(--glass-blur);
+}
+#all-blocks-button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  transition: fill 0.3s ease;
+}
+.wallet-address {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin: 0.5rem 0;
+}
+
+@media (max-width: 900px) {
+  .balance-transactions-container {
+    width: 100%;
+    min-width: unset;
+    padding-right: 0;
+  }
+  .home-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  .wallet-balance-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .wallet-balance-container .left,
+  .wallet-balance-container .right {
+    width: 100%;
+    min-width: unset;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  #all-blocks-button {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* Mobile stuff */

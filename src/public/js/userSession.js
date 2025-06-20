@@ -38,7 +38,8 @@ const verifyToken = async () => {
     }
     const data = await response.json();
     if (data.message === "Token is valid") {
-      user = data.user;
+      window.user = data.user;
+      document.dispatchEvent(new CustomEvent("userReady"));
       return true;
     } else {
       console.error("Token verification failed:", data);
