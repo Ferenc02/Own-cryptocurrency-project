@@ -4,7 +4,10 @@ import {
   validatePassword,
 } from "../auth/user_authentication.mjs";
 import User from "../auth/user_schema.js";
+import { generateKeyAndAddress } from "../../blockchain/services/blockchainService.js";
+
 import jwt from "jsonwebtoken";
+
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined in environment variables");
@@ -34,12 +37,22 @@ export const register = async (req, res) => {
     return res.status(400).json({ message: "Username already exists" });
   }
 
+  const { publicKey, privateKey, address } = await generateKeyAndAddress();
+
+  if (!publicKey || !address) {
+    return res.status(500).json({ message: "Failed to generate wallet keys" });
+  }
+
   const token = jwt.sign(
     {
       id,
       username,
       email,
       role: "user",
+      wallet: {
+        publicKey: publicKey,
+        address: address,
+      },
     },
     JWT_SECRET,
     { expiresIn: "1h" }
@@ -51,14 +64,22 @@ export const register = async (req, res) => {
     email,
     id,
     role: "user",
+    wallet: {
+      publicKey: publicKey,
+      address: address,
+    },
   });
-  res
-    .status(201)
-    .json({
-      message: "User registered",
-      token,
-      user: { username: user.username, email: user.email, id: user.id },
-    });
+  res.status(201).json({
+    message: "User registered",
+    token,
+    user: {
+      username: user.username,
+      email: user.email,
+      id: user.id,
+      wallet: user.wallet,
+      role: user.role,
+    },
+  });
 };
 
 export const login = async (req, res) => {
@@ -82,6 +103,7 @@ export const login = async (req, res) => {
       username: user.username,
       email: user.email,
       role: user.role || "user",
+      wallet: user.wallet,
     },
     JWT_SECRET,
     { expiresIn: "1h" }
@@ -90,6 +112,12 @@ export const login = async (req, res) => {
   res.status(200).json({
     message: "Login successful",
     token,
-    user: { username: user.username, email: user.email, id: user.id },
+    user: {
+      username: user.username,
+      email: user.email,
+      id: user.id,
+      wallet: user.wallet,
+      role: user.role,
+    },
   });
 };

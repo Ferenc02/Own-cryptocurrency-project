@@ -5,6 +5,7 @@ const userLogoutButton = document.querySelector("#logout");
 const walletBalanceUsername = document.querySelector(
   "#wallet-balance-username"
 );
+const walletAddressSpan = document.querySelector(".wallet-address-span");
 
 const toggleProfileMenu = () => {
   profileMenu.classList.toggle("hidden");
@@ -21,6 +22,7 @@ const logoutProfile = () => {
 
 document.addEventListener("userReady", () => {
   walletBalanceUsername.textContent = window.user.username || "Guest";
+  walletAddressSpan.textContent = window.user.wallet.address || "No address";
 });
 
 profileButton.addEventListener("click", toggleProfileMenu);

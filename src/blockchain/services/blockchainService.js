@@ -2,6 +2,7 @@ import Blockchain from "../models/Blockchain.js";
 import Block from "../models/Block.js";
 import { loadBlockchain, saveBlockchain } from "../database/blockchainDB.js";
 import { logError } from "./logger.js";
+import { generateKeyPairSync } from "crypto";
 
 let blockchain = null;
 
@@ -38,4 +39,16 @@ export async function createBlock(data) {
   blockchain.addBlock(newBlock);
   await saveBlockchain(blockchain.chain);
   return newBlock;
+}
+export async function generateKeyAndAddress() {
+  const { publicKey, privateKey } = generateKeyPairSync("rsa", {
+    modulusLength: 570,
+    publicKeyEncoding: {
+      type: "spki",
+      format: "der",
+    },
+  });
+
+  const address = publicKey.toString("hex").slice(20, 60);
+  return { publicKey: publicKey.toString("hex"), privateKey, address };
 }
