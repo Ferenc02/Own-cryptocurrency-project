@@ -3,6 +3,7 @@ const loginForm = document.querySelector(".login-form");
 const registerForm = document.querySelector(".register-form");
 
 const URL = "http://localhost:6200/api/users";
+
 const postData = async (url = "", data = {}) => {
   // Default options are marked with *
   const response = await fetch(url, {
@@ -23,12 +24,14 @@ const registerUser = async (event) => {
   event.preventDefault();
   const formData = new FormData(event.target);
   const data = Object.fromEntries(formData.entries());
+
   try {
     const response = await postData(URL, data);
-
+    console.log("Response:", response);
     if (response.message === "User registered") {
-      console.log("User registered successfully");
-      alert("User registered successfully");
+      localStorage.setItem("token", response.token);
+      bearerToken = response.token;
+      window.location.href = "home.html";
     } else {
       console.error("Registration failed:", response);
       alert("Registration failed: " + response.message);
@@ -45,8 +48,9 @@ const loginUser = async (event) => {
     const response = await postData(URL, data);
 
     if (response.message === "Login successful") {
-      console.log("Login successful");
-      alert("Login successful");
+      localStorage.setItem("token", response.token);
+
+      window.location.href = "home.html";
       // Redirect or perform further actions
     } else {
       console.error("Login failed:", response);

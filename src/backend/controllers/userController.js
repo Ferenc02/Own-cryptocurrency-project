@@ -4,11 +4,15 @@ import {
   validatePassword,
 } from "../auth/user_authentication.mjs";
 import User from "../auth/user_schema.js";
+import jwt from "jsonwebtoken";
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET is not defined in environment variables");
+}
 
 export const authenticate = async (req, res) => {
   const { username, password, email } = req.body;
 
-  console.log(email, username, password);
   if (email) {
     register(req, res);
   } else if (username && password) {
@@ -25,19 +29,36 @@ export const register = async (req, res) => {
 
   id = id || new mongoose.Types.ObjectId().toString();
 
-  console.log("registering user:");
-
+  let existingUser = await User.find({ username });
   if (existingUser.length > 0) {
     return res.status(400).json({ message: "Username already exists" });
   }
+
+  const token = jwt.sign(
+    {
+      id,
+      username,
+      email,
+      role: "user",
+    },
+    JWT_SECRET,
+    { expiresIn: "1h" }
+  );
 
   const user = await User.create({
     username,
     password: hashedPassword,
     email,
     id,
+    role: "user",
   });
-  res.status(201).json({ message: "User registered" });
+  res
+    .status(201)
+    .json({
+      message: "User registered",
+      token,
+      user: { username: user.username, email: user.email, id: user.id },
+    });
 };
 
 export const login = async (req, res) => {
@@ -54,8 +75,21 @@ export const login = async (req, res) => {
   if (!isMatch) {
     return res.status(400).json({ message: "Invalid password" });
   }
+
+  const token = jwt.sign(
+    {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role || "user",
+    },
+    JWT_SECRET,
+    { expiresIn: "1h" }
+  );
+
   res.status(200).json({
     message: "Login successful",
+    token,
     user: { username: user.username, email: user.email, id: user.id },
   });
 };
