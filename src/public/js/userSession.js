@@ -14,7 +14,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   }
 
   const isValid = await verifyToken();
-  console.log(isValid);
   if (!isValid) {
     localStorage.removeItem("token");
     window.location.href = "login.html";

@@ -6,6 +6,10 @@ const walletBalanceUsername = document.querySelector(
   "#wallet-balance-username"
 );
 const walletAddressSpan = document.querySelector(".wallet-address-span");
+const footerText = document.querySelector(".footer-text");
+
+let socket;
+let nodeList = [];
 
 const toggleProfileMenu = () => {
   profileMenu.classList.toggle("hidden");
@@ -20,9 +24,41 @@ const logoutProfile = () => {
   window.location.href = "login.html";
 };
 
-document.addEventListener("userReady", () => {
+const connectToWebSocketServer = async () => {
+  const config = await fetch("/env").then((res) => res.json());
+  socket = new WebSocket(
+    `ws://${config.NODE_MASTER_SERVER_URL}:${config.NODE_MASTER_SERVER_PORT}`
+  );
+  socket.onopen = () => {
+    footerText.textContent = `Connected to WebSocket master server at ws://${config.NODE_MASTER_SERVER_URL}:${config.NODE_MASTER_SERVER_PORT}`;
+    getNodesFromSocket();
+    setInterval(() => {
+      getNodesFromSocket();
+    }, 5000); // Fetch nodes every 5 seconds
+  };
+};
+
+const getNodesFromSocket = () => {
+  socket.send(
+    JSON.stringify({
+      type: "requestPeersList",
+      device: "web-client",
+    })
+  );
+
+  socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.type === "welcome") {
+      nodeList = data.peers;
+    }
+  };
+};
+
+document.addEventListener("userReady", async () => {
   walletBalanceUsername.textContent = window.user.username || "Guest";
   walletAddressSpan.textContent = window.user.wallet.address || "No address";
+
+  await connectToWebSocketServer();
 });
 
 profileButton.addEventListener("click", toggleProfileMenu);

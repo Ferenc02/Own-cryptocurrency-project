@@ -2,11 +2,17 @@ import fs from "fs/promises";
 import { logError } from "../services/logger.js";
 
 export async function saveBlockchain(data, PORT) {
-  const dbFilePath = `./src/blockchain/database/${PORT}/blockchain.json`;
+  let dbFilePath;
 
-  fs.mkdir(`./src/blockchain/database/${PORT}`, { recursive: true }).catch(
-    (error) => logError(error)
-  );
+  if (PORT) {
+    dbFilePath = `./src/blockchain/database/${PORT}/blockchain.json`;
+    fs.mkdir(`./src/blockchain/database/${PORT}`, { recursive: true }).catch(
+      (error) => logError(error)
+    );
+  } else {
+    dbFilePath = `./src/blockchain/database/blockchain.json`;
+  }
+
   try {
     await fs.writeFile(dbFilePath, JSON.stringify(data, null, 2));
   } catch (error) {
@@ -15,7 +21,12 @@ export async function saveBlockchain(data, PORT) {
 }
 
 export async function loadBlockchain(PORT) {
-  const dbFilePath = `./src/blockchain/database/${PORT}/blockchain.json`;
+  let dbFilePath;
+  if (PORT) {
+    dbFilePath = `./src/blockchain/database/${PORT}/blockchain.json`;
+  } else {
+    dbFilePath = `./src/blockchain/database/blockchain.json`;
+  }
 
   // Check if the file exists before trying to read it
   try {

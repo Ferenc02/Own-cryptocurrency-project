@@ -1,9 +1,10 @@
 import Block from "./Block.js";
 
 export default class Blockchain {
-  constructor() {
+  constructor(PORT) {
     this.chain = [];
     this.diffficulty = 2;
+    this.port = PORT;
   }
 
   createGenesisBlock() {
@@ -11,7 +12,14 @@ export default class Blockchain {
       0,
       new Date().toISOString(),
       {
-        data: "Genesis Block",
+        transactions: [
+          {
+            from: "0",
+            to: "0",
+            amount: 1000000,
+            message: "Genesis Block",
+          },
+        ],
       },
       "0"
     );

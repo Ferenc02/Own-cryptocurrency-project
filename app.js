@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import startMasterServer from "./src/node/master-server.js";
 import initializeP2PServer from "./src/node/p2p.js";
-import { saveIPToEnv } from "./src/misc/ipGrabber.mjs";
+import getLocalIP, { saveIPToEnv } from "./src/misc/ipGrabber.mjs";
 import express from "express";
 import { initialize } from "./src/blockchain/services/blockchainService.js";
 import errorHandler from "./src/blockchain/middlewares/errorHandler.js";
@@ -35,14 +35,15 @@ if (args.includes("--master")) {
 // Start the P2P server if --node flag is provided
 if (args.includes("--node")) {
   let randomPort = Math.floor(Math.random() * (65535 - 1024 + 1)) + 1024;
+  let localIP = getLocalIP();
   initializeP2PServer(randomPort);
 
   const app = express();
   app.use(cors());
   app.use(xss());
-  app.use(mongoSanitize());
   app.use(limiter);
   app.use(express.json());
+
   await initialize(randomPort);
 
   app.use("/api/blocks", router);
@@ -55,8 +56,10 @@ if (args.includes("--node")) {
 
   app.use(errorHandler);
 
-  app.listen(randomPort, () => {
-    console.log(`Express server running on port ${randomPort}`);
+  app.listen(randomPort + 1, () => {
+    console.log(
+      `Express server running on  http://${localIP + ":" + (randomPort + 1)}`
+    );
   });
 }
 
@@ -93,6 +96,13 @@ if (args.includes("--web")) {
   app.use(xss());
   app.use(limiter);
   app.use(express.static("src/public"));
+
+  app.get("/env", (req, res) => {
+    res.status(200).json({
+      NODE_MASTER_SERVER_URL: process.env.NODE_MASTER_SERVER_URL,
+      NODE_MASTER_SERVER_PORT: process.env.NODE_MASTER_SERVER_PORT,
+    });
+  });
   app.listen(6201, () => {
     console.log("🚀 Web server running on http://localhost:6201 🚀");
   });

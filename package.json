@@ -15,7 +15,7 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "dev:master": "nodemon app.js --master",
+    "dev:master": "node app.js --master",
     "dev:node": "node app.js --node",
     "dev:ip": "node app.js --ip",
     "dev:backend": "node app.js --backend",
