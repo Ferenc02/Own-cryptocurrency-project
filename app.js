@@ -72,16 +72,39 @@ if (args.includes("--backend")) {
   const app = express();
   app.use(cors());
   app.use(xss());
-  app.use(mongoSanitize());
   app.use(limiter);
   app.use(express.json());
   app.use("/api", userRoutes);
 
   app.listen(6200, () => {
-    console.log("Backend server running on  http://localhost:6200");
+    console.log("🚀 Backend server running on  http://localhost:6200 🚀");
   });
 
   app.get("/", (req, res) => {
     res.status(200).json({ message: "Welcome to the backend server" });
   });
+}
+
+// Start the web server if --web flag is provided
+if (args.includes("--web")) {
+  const app = express();
+
+  app.use(cors());
+  app.use(xss());
+  app.use(limiter);
+  app.use(express.static("src/public"));
+  app.listen(6201, () => {
+    console.log("🚀 Web server running on http://localhost:6201 🚀");
+  });
+}
+if (args.includes("--help")) {
+  console.log(
+    "Available commands:\n" +
+      "--master: Start the master server\n" +
+      "--node: Start the P2P node server\n" +
+      "--ip: Save the IP address to .env file\n" +
+      "--backend: Start the backend server\n" +
+      "--web: Start the web server\n" +
+      "--help: Show this help message"
+  );
 }
