@@ -14,7 +14,7 @@ export default class Blockchain {
       {
         transactions: [
           {
-            from: "0",
+            from: null,
             to: "0",
             amount: 1000000,
             message: "Genesis Block",

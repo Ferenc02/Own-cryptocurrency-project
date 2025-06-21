@@ -1,14 +1,10 @@
 let mineBlockButton = document.querySelector(".mine-button");
-
-let transactionPool = [];
-
+const availableDepositAmount = document.querySelector(
+  ".available-deposit-amount"
+);
 let mineBlockPrompt = () => {
   const confirmation = confirm(
-    `Do you want to mine a new block with the current transaction pool?\ntransactionPool: ${JSON.stringify(
-      transactionPool,
-      null,
-      2
-    )}`
+    "Are you sure you want to mine a new block? This will include all pending transactions in the transaction pool."
   );
   if (confirmation) {
     sendMineBlockRequest();
@@ -26,7 +22,6 @@ const sendMineBlockRequest = () => {
         newSocket.send(
           JSON.stringify({
             type: "mineBlock",
-            transactions: transactionPool,
           })
         );
         console.log("Request to mine block sent to node:", node);
@@ -34,14 +29,97 @@ const sendMineBlockRequest = () => {
     }
   });
 };
+const getBalance = async (address) => {
+  const node = selectRandomNode();
 
-const addTransactionToPool = (transaction) => {
-  if (transaction && transaction.from && transaction.to && transaction.amount) {
-    transactionPool.push(transaction);
-    console.log("Transaction added to pool:", transaction);
+  if (!node) return 0;
+
+  return new Promise((resolve, reject) => {
+    const newSocket = new WebSocket(`ws://${node.address}:${node.port}`);
+
+    newSocket.onopen = () => {
+      newSocket.send(
+        JSON.stringify({
+          type: "getBalance",
+          address: address,
+        })
+      );
+    };
+
+    newSocket.onmessage = (event) => {
+      try {
+        const response = JSON.parse(event.data);
+        if (response.type === "balanceResponse") {
+          console.log(`Balance for ${address}:`, response.balance);
+          resolve(response.balance);
+        } else {
+          console.error("Unexpected response:", response);
+          reject("Unexpected response");
+        }
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    newSocket.onerror = (err) => {
+      reject(err);
+    };
+  });
+};
+
+const addTransaction = (from, to, amount, message) => {
+  if (from && to && amount > 0) {
+    const transaction = {
+      from: from,
+      to: to,
+      amount: amount,
+      message: message || "No message provided",
+    };
+    sendTransactionToNodes(transaction);
   } else {
-    console.error("Invalid transaction, cannot be added to the pool.");
+    console.error("Invalid transaction parameters.");
   }
+};
+
+const sendTransactionToNodes = (transaction) => {
+  if (
+    !transaction ||
+    !transaction.from ||
+    !transaction.to ||
+    !transaction.amount
+  ) {
+    console.error("Invalid transaction, cannot be sent to nodes.");
+    return;
+  }
+
+  nodeList.forEach((node) => {
+    if (node.ws === "connected") {
+      let newSocket = new WebSocket(`ws://${node.address}:${node.port}`);
+
+      newSocket.onopen = () => {
+        newSocket.send(
+          JSON.stringify({
+            type: "addTransaction",
+            transaction: transaction,
+          })
+        );
+        console.log("Transaction sent to node:", node);
+      };
+
+      newSocket.onerror = (err) => {
+        console.error("Error sending transaction to node:", err);
+      };
+    }
+  });
+};
+
+const selectRandomNode = () => {
+  if (nodeList.length === 0) {
+    console.error("No nodes available to select from.");
+    return null;
+  }
+  const randomIndex = Math.floor(Math.random() * nodeList.length);
+  return nodeList[randomIndex];
 };
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -5,6 +5,7 @@ import getLocalIP from "../misc/ipGrabber.mjs";
 import {
   blockchain,
   createBlock,
+  getBalance,
 } from "../blockchain/services/blockchainService.js";
 import { saveBlockchain } from "../blockchain/database/blockchainDB.js";
 
@@ -14,6 +15,7 @@ let localPort;
 let ws;
 const masterServer = `ws://${process.env.NODE_MASTER_SERVER_URL}:${process.env.NODE_MASTER_SERVER_PORT}`; // Master server address
 let nodeAddress;
+let transactionPool = [];
 
 const initializeP2PServer = (port) => {
   if (!port) {
@@ -37,7 +39,7 @@ const initializeP2PServer = (port) => {
   server.on("connection", (ws) => {
     console.log("✅ New peer connected");
 
-    ws.on("message", (message) => {
+    ws.on("message", async (message) => {
       try {
         const data = JSON.parse(message);
         if (data.type === "mineBlock") {
@@ -50,9 +52,16 @@ const initializeP2PServer = (port) => {
             amount: 20,
           };
 
-          data.transactions.push(transactionReward);
+          transactionPool.push(transactionReward);
 
-          createBlock(data.transactions);
+          transactionPool = transactionPool.map((tx) => {
+            if (tx.state === "pending") {
+              return { ...tx, state: "done" };
+            }
+            return tx;
+          });
+
+          createBlock(transactionPool);
 
           let endTimer = Date.now();
           let timeElapsed = endTimer - startTimer;
@@ -64,6 +73,38 @@ const initializeP2PServer = (port) => {
           );
 
           sendBlockchainToMaster(timeElapsed);
+        } else if (data.type === "getBalance") {
+          const address = data.address;
+          const balance = await getBalance(address);
+          const balanceFromPool = transactionPool.reduce((acc, tx) => {
+            if (tx.to === address) acc += tx.amount;
+            if (tx.from === address) acc -= tx.amount;
+            return acc;
+          }, 0);
+
+          // console.log(`Balance for ${address}: ${balance + balanceFromPool}`);
+          ws.send(
+            JSON.stringify({
+              type: "balanceResponse",
+              address: address,
+              balance: (balance + balanceFromPool).toFixed(2),
+            })
+          );
+        } else if (data.type === "addTransaction") {
+          const { from, to, amount, message } = data.transaction;
+          if (from && to && amount > 0) {
+            const transaction = {
+              from: from,
+              to: to,
+              amount: amount,
+              message: message || "No message provided",
+              state: "pending",
+            };
+            transactionPool.push(transaction);
+            console.log("Transaction added to the pool:", transaction);
+          } else {
+            console.error("Invalid transaction data:", data.transaction);
+          }
         }
       } catch (error) {
         console.error("Error parsing message from peer:", error);
