@@ -27,7 +27,7 @@ const registerUser = async (event) => {
 
   try {
     const response = await postData(URL, data);
-    console.log("Response:", response);
+    // console.log("Response:", response);
     if (response.message === "User registered") {
       localStorage.setItem("token", response.token);
       bearerToken = response.token;

@@ -6,6 +6,7 @@ import {
   blockchain,
   createBlock,
   getBalance,
+  validateTransaction,
 } from "../blockchain/services/blockchainService.js";
 import { saveBlockchain } from "../blockchain/database/blockchainDB.js";
 
@@ -105,6 +106,21 @@ const initializeP2PServer = (port) => {
               state: "pending",
               timestamp: new Date().toISOString(),
             };
+
+            let validTransaction = validateTransaction(transaction);
+
+            if (!validTransaction) {
+              console.error("❌ Invalid transaction data:", transaction);
+              ws.send(
+                JSON.stringify({
+                  type: "transactionError",
+                  message: "❌ Invalid transaction data",
+                })
+              );
+
+              return;
+            }
+
             transactionPool.push(transaction);
             console.log("Transaction added to the pool:", transaction);
           } else {

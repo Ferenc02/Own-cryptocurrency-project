@@ -13,7 +13,7 @@ const sendMineBlockRequest = () => {
             type: "mineBlock",
           })
         );
-        console.log("Request to mine block sent to node:", node);
+        // console.log("Request to mine block sent to node:", node);
       };
     }
   });
@@ -39,7 +39,7 @@ const getBalance = async (address) => {
       try {
         const response = JSON.parse(event.data);
         if (response.type === "balanceResponse") {
-          console.log(`Balance for ${address}:`, response.balance);
+          // console.log(`Balance for ${address}:`, response.balance);
           resolve(response.balance);
         } else {
           console.error("Unexpected response:", response);
@@ -88,10 +88,10 @@ const requestTransactionsFromNodes = async () => {
         try {
           const data = JSON.parse(event.data);
           if (data.type === "transactions") {
-            console.log(
-              "Received transaction pool from node:",
-              data.transactions
-            );
+            // console.log(
+            //   "Received transaction pool from node:",
+            //   data.transactions
+            // );
             resolve(data.transactions);
           }
         } catch (error) {
@@ -162,7 +162,7 @@ const sendTransactionToNodes = (transaction) => {
             transaction: transaction,
           })
         );
-        console.log("Transaction sent to node:", node);
+        // console.log("Transaction sent to node:", node);
       };
 
       newSocket.onerror = (err) => {

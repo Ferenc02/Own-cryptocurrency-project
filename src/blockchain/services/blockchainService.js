@@ -69,3 +69,19 @@ export let getBalance = async (address) => {
 
   return balance;
 };
+
+export let validateTransaction = (transaction) => {
+  if (!transaction.from || !transaction.to || !transaction.amount) {
+    return false;
+  }
+
+  if (transaction.amount <= 0) {
+    return false;
+  }
+
+  if (transaction.from === transaction.to) {
+    return false;
+  }
+
+  return true;
+};

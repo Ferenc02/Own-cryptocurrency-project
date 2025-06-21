@@ -210,7 +210,7 @@ const updateBlocksList = async () => {
   blocksList.innerHTML = "";
 
   blocks.forEach((block) => {
-    console.log("Block:", block);
+    // console.log("Block:", block);
     const div = document.createElement("div");
     div.className = "block-item";
     div.innerText = block.index;
