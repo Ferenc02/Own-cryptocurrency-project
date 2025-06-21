@@ -99,12 +99,32 @@ const initializeP2PServer = (port) => {
               amount: amount,
               message: message || "No message provided",
               state: "pending",
+              timestamp: new Date().toISOString(),
             };
             transactionPool.push(transaction);
             console.log("Transaction added to the pool:", transaction);
           } else {
             console.error("Invalid transaction data:", data.transaction);
           }
+        } else if (data.type === "requestTransactions") {
+          console.log("📜 Sending transaction pool to peer 📜");
+
+          let transactionsToSend = [];
+          blockchain.chain.forEach((block) => {
+            if (block.data && block.data.transactions) {
+              transactionsToSend = transactionsToSend.concat(
+                block.data.transactions
+              );
+            }
+          });
+          transactionsToSend = transactionsToSend.concat(transactionPool);
+
+          ws.send(
+            JSON.stringify({
+              type: "transactions",
+              transactions: transactionsToSend,
+            })
+          );
         }
       } catch (error) {
         console.error("Error parsing message from peer:", error);

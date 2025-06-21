@@ -81,6 +81,43 @@ const addTransaction = (from, to, amount, message) => {
   }
 };
 
+const requestTransactionsFromNodes = async () => {
+  let node = selectRandomNode();
+  if (node.ws === "connected") {
+    return new Promise((resolve, reject) => {
+      let newSocket = new WebSocket(`ws://${node.address}:${node.port}`);
+
+      newSocket.onopen = () => {
+        newSocket.send(
+          JSON.stringify({
+            type: "requestTransactions",
+          })
+        );
+      };
+
+      newSocket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "transactions") {
+            console.log(
+              "Received transaction pool from node:",
+              data.transactions
+            );
+            resolve(data.transactions);
+          }
+        } catch (error) {
+          console.error("Error parsing message from node:", error);
+          reject(error);
+        }
+      };
+
+      newSocket.onerror = (err) => {
+        console.error("Error requesting transactions from node:", err);
+      };
+    });
+  }
+};
+
 const sendTransactionToNodes = (transaction) => {
   if (
     !transaction ||

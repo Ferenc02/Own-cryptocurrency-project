@@ -14,6 +14,7 @@ const depositContainer = document.querySelector(".deposit-container");
 const sendContainer = document.querySelector(".send-container");
 const depositForm = document.querySelector("#deposit-form");
 const sendForm = document.querySelector("#send-form");
+const transactionList = document.querySelector("#transactions-body");
 
 let socket;
 let nodeList = [];
@@ -49,7 +50,7 @@ const connectToWebSocketServer = async () => {
 
 const openDepositModal = async () => {
   let balance = await getBalance("0");
-  availableDepositAmount.textContent = `${balance}.00 TRC`;
+  availableDepositAmount.textContent = `${balance} TRC`;
 
   depositContainer.classList.remove("hidden");
 
@@ -92,7 +93,7 @@ const depositFormSubmit = async (event) => {
   depositContainer.classList.add("hidden");
   depositForm.reset();
   let balance = await getBalance(window.user.wallet.address);
-  walletBalance.textContent = `${balance}.00 TRC`;
+  walletBalance.textContent = `${balance} TRC`;
 };
 
 const sendFormSubmit = async (event) => {
@@ -125,7 +126,7 @@ const sendFormSubmit = async (event) => {
   sendContainer.classList.add("hidden");
   sendForm.reset();
   balance = await getBalance(window.user.wallet.address);
-  walletBalance.textContent = `${balance}.00 TRC`;
+  walletBalance.textContent = `${balance} TRC`;
 };
 
 const getNodesFromSocket = () => {
@@ -156,9 +157,28 @@ document.addEventListener("userReady", async () => {
   await connectToWebSocketServer();
 });
 
+const updateTransactionTable = async () => {
+  let transactions = await requestTransactionsFromNodes();
+
+  transactions.forEach((transaction) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${transaction.from}</td>
+      <td>${transaction.to}</td>
+      <td>${transaction.amount} TRC</td>
+      <td>${transaction.message || "No message"}</td>
+      <td>${new Date(transaction.timestamp).toLocaleString()}</td>
+      <td>${transaction.state || "done"}</td>
+    `;
+    transactionList.appendChild(row);
+  });
+};
+
 document.addEventListener("nodesReady", async () => {
   let balance = await getBalance(window.user.wallet.address);
-  walletBalance.textContent = `${balance}.00 TRC`;
+  walletBalance.textContent = `${balance} TRC`;
+
+  updateTransactionTable();
 });
 
 profileButton.addEventListener("click", toggleProfileMenu);
