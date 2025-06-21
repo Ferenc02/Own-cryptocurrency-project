@@ -362,13 +362,13 @@ header .profile-menu button:hover {
   flex-wrap: wrap;
   gap: 1rem;
 }
-.balance-transactions-container {
-  width: 40%;
+.balance-blocks-container {
+  width: 100%;
   min-width: 300px;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
-
   box-sizing: border-box;
 }
 .glass-container {
@@ -450,17 +450,68 @@ header .profile-menu button:hover {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
+  font-size: 1rem;
+  background: var(--glass-bg);
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 #transactions-table th,
 #transactions-table td {
   padding: 0.5rem;
   border: 1px solid var(--color-glass-border);
   text-align: left;
+  word-break: break-word;
 }
 #transactions-table th {
   background: var(--glass-bg);
   color: var(--color-text-primary);
   font-weight: 600;
+}
+
+#blocks-list {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+.block-item {
+  width: 4rem;
+  height: 4rem;
+  font-size: 1.25rem;
+  margin: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.block-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+.block-details {
+  display: flex;
+  flex-direction: column;
+
+  padding: 1rem;
+  overflow: auto;
+  word-break: break-all;
+}
+.block-details-content ul {
+  max-height: 300px;
+  overflow-y: auto;
+}
+.blocks-container,
+.transactions-container {
+  flex: 1;
 }
 
 .top-container {
@@ -506,7 +557,20 @@ header .profile-menu button:hover {
 }
 
 @media (max-width: 900px) {
-  .balance-transactions-container {
+  .transactions-container {
+    width: 100%;
+    overflow: hidden;
+  }
+  #transactions-table {
+    overflow-x: auto;
+  }
+  #transactions-table th,
+  #transactions-table td {
+    font-size: 0.875rem;
+    padding: 0.5rem;
+  }
+
+  .balance-blocks-container {
     width: 100%;
     min-width: unset;
     padding-right: 0;

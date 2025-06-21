@@ -15,7 +15,13 @@ const sendContainer = document.querySelector(".send-container");
 const depositForm = document.querySelector("#deposit-form");
 const sendForm = document.querySelector("#send-form");
 const transactionList = document.querySelector("#transactions-body");
-
+const blocksList = document.querySelector("#blocks-list");
+const mineBlockButton = document.querySelector(".mine-button");
+const blockDetailsContainer = document.querySelector(
+  ".block-details-container"
+);
+const blockDetailsContent = document.querySelector(".block-details-content");
+const closeBlockDetailsButton = document.querySelector("#close-block-details");
 let socket;
 let nodeList = [];
 
@@ -46,6 +52,19 @@ const connectToWebSocketServer = async () => {
       getNodesFromSocket();
     }, 5000); // Fetch nodes every 5 seconds
   };
+};
+
+let mineBlockPrompt = () => {
+  const confirmation = confirm(
+    "Are you sure you want to mine a new block? This will include all pending transactions in the transaction pool."
+  );
+  if (confirmation) {
+    sendMineBlockRequest();
+    updateTransactionTable();
+    updateBlocksList();
+  } else {
+    alert("Mining cancelled.");
+  }
 };
 
 const openDepositModal = async () => {
@@ -82,6 +101,12 @@ const depositFormSubmit = async (event) => {
     return;
   }
 
+  let balance = await getBalance("0");
+  if (amount > balance) {
+    alert("Insufficient balance to deposit this amount.");
+    return;
+  }
+
   const confirmation = confirm(`Do you want to deposit ${amount} TRC?`);
 
   if (!confirmation) {
@@ -92,8 +117,10 @@ const depositFormSubmit = async (event) => {
   addTransaction("0", window.user.wallet.address, amount, "deposit");
   depositContainer.classList.add("hidden");
   depositForm.reset();
-  let balance = await getBalance(window.user.wallet.address);
+  balance = await getBalance(window.user.wallet.address);
   walletBalance.textContent = `${balance} TRC`;
+
+  updateTransactionTable();
 };
 
 const sendFormSubmit = async (event) => {
@@ -127,6 +154,8 @@ const sendFormSubmit = async (event) => {
   sendForm.reset();
   balance = await getBalance(window.user.wallet.address);
   walletBalance.textContent = `${balance} TRC`;
+
+  updateTransactionTable();
 };
 
 const getNodesFromSocket = () => {
@@ -160,6 +189,8 @@ document.addEventListener("userReady", async () => {
 const updateTransactionTable = async () => {
   let transactions = await requestTransactionsFromNodes();
 
+  transactionList.innerHTML = "";
+
   transactions.forEach((transaction) => {
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -173,14 +204,72 @@ const updateTransactionTable = async () => {
     transactionList.appendChild(row);
   });
 };
+const updateBlocksList = async () => {
+  let blocks = await requestBlocksFromNodes();
+
+  blocksList.innerHTML = "";
+
+  blocks.forEach((block) => {
+    console.log("Block:", block);
+    const div = document.createElement("div");
+    div.className = "block-item";
+    div.innerText = block.index;
+
+    div.addEventListener("click", () => {
+      blockDetailsContainer.classList.remove("hidden");
+      blockDetailsContent.innerHTML = `
+      <p><strong>Index:</strong> ${block.index}</p>
+      <p><strong>Block Hash:</strong> ${block.hash}</p>
+        
+        <p><strong>Previous Hash:</strong> ${block.previousHash}</p>
+        <p><strong>Timestamp:</strong> ${new Date(
+          block.timestamp
+        ).toLocaleString()}</p>
+        <p><strong>Nonce:</strong> ${block.nonce}</p>
+        <p><strong>Transactions:</strong></p>
+        <ul>
+          ${block.data.transactions
+            .map(
+              (tx) => `
+            <li>
+              <strong>From:</strong> ${tx.from} <br>
+              <strong>To:</strong> ${tx.to} <br>
+              <strong>Amount:</strong> ${tx.amount} TRC <br>
+              <strong>Message:</strong> ${tx.message || "No message"} <br>
+              <strong>Timestamp:</strong> ${new Date(
+                tx.timestamp
+              ).toLocaleString()}
+            </li>
+          `
+            )
+            .join("")}
+        </ul>
+      `;
+
+      blockDetailsContainer.addEventListener("click", (event) => {
+        if (
+          event.target === blockDetailsContainer ||
+          event.target === closeBlockDetailsButton
+        ) {
+          blockDetailsContainer.classList.add("hidden");
+        }
+      });
+    });
+
+    blocksList.appendChild(div);
+  });
+};
 
 document.addEventListener("nodesReady", async () => {
   let balance = await getBalance(window.user.wallet.address);
   walletBalance.textContent = `${balance} TRC`;
 
   updateTransactionTable();
+
+  updateBlocksList();
 });
 
+mineBlockButton.addEventListener("click", mineBlockPrompt);
 profileButton.addEventListener("click", toggleProfileMenu);
 userDetailsButton.addEventListener("click", getProfileDetails);
 userLogoutButton.addEventListener("click", logoutProfile);

@@ -50,6 +50,8 @@ const initializeP2PServer = (port) => {
             from: "0",
             to: nodeAddress,
             amount: 20,
+            message: "Mining Reward",
+            timestamp: new Date().toISOString(),
           };
 
           transactionPool.push(transactionReward);
@@ -62,6 +64,8 @@ const initializeP2PServer = (port) => {
           });
 
           createBlock(transactionPool);
+
+          transactionPool = [];
 
           let endTimer = Date.now();
           let timeElapsed = endTimer - startTimer;
@@ -123,6 +127,14 @@ const initializeP2PServer = (port) => {
             JSON.stringify({
               type: "transactions",
               transactions: transactionsToSend,
+            })
+          );
+        } else if (data.type === "requestBlocks") {
+          console.log("📦 Sending blockchain to peer 📦");
+          ws.send(
+            JSON.stringify({
+              type: "blockchain",
+              blockchain: blockchain.chain,
             })
           );
         }

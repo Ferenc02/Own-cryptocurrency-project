@@ -1,17 +1,6 @@
-let mineBlockButton = document.querySelector(".mine-button");
 const availableDepositAmount = document.querySelector(
   ".available-deposit-amount"
 );
-let mineBlockPrompt = () => {
-  const confirmation = confirm(
-    "Are you sure you want to mine a new block? This will include all pending transactions in the transaction pool."
-  );
-  if (confirmation) {
-    sendMineBlockRequest();
-  } else {
-    alert("Mining cancelled.");
-  }
-};
 
 const sendMineBlockRequest = () => {
   nodeList.forEach((node) => {
@@ -118,6 +107,39 @@ const requestTransactionsFromNodes = async () => {
   }
 };
 
+const requestBlocksFromNodes = async () => {
+  let node = selectRandomNode();
+  if (node.ws === "connected") {
+    return new Promise((resolve, reject) => {
+      let newSocket = new WebSocket(`ws://${node.address}:${node.port}`);
+
+      newSocket.onopen = () => {
+        newSocket.send(
+          JSON.stringify({
+            type: "requestBlocks",
+          })
+        );
+      };
+
+      newSocket.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "blockchain") {
+            resolve(data.blockchain);
+          }
+        } catch (error) {
+          console.error("Error parsing message from node:", error);
+          reject(error);
+        }
+      };
+
+      newSocket.onerror = (err) => {
+        console.error("Error requesting blocks from node:", err);
+      };
+    });
+  }
+};
+
 const sendTransactionToNodes = (transaction) => {
   if (
     !transaction ||
@@ -158,7 +180,3 @@ const selectRandomNode = () => {
   const randomIndex = Math.floor(Math.random() * nodeList.length);
   return nodeList[randomIndex];
 };
-
-document.addEventListener("DOMContentLoaded", () => {
-  mineBlockButton.addEventListener("click", mineBlockPrompt);
-});
