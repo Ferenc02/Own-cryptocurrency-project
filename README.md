@@ -162,6 +162,12 @@ start the **web frontend**:
 npm run dev:web
 ```
 
+if help is needed, you can run:
+
+```bash
+npm run dev:help
+```
+
 ---
 
 ## Architecture
