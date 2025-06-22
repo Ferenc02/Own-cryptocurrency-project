@@ -1,5 +1,48 @@
 import fs from "fs/promises";
+import mongoose from "mongoose";
 import { logError } from "../services/logger.js";
+
+const mongooseURI = "mongodb://127.0.0.1:27017/db";
+
+export const getBlockchainFromMongo = async () => {
+  try {
+    const conn = await mongoose.connect(mongooseURI);
+
+    if (conn) {
+      return conn
+        .getCollection("blockchain")
+        .findOne({})
+        .then((data) => {
+          if (data) {
+            return data.blockchain;
+          } else {
+            return null;
+          }
+        });
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const saveBlockchainToMongo = async (data) => {
+  try {
+    const conn = await mongoose.connect(mongooseURI);
+
+    if (conn) {
+      const db = mongoose.connection.db;
+      const collection = db.collection("blockchain");
+      // Upsert the blockchain data (replace or insert)
+      await collection.updateOne(
+        {},
+        { $set: { blockchain: data } },
+        { upsert: true }
+      );
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 export async function saveBlockchain(data, PORT) {
   let dbFilePath;
@@ -15,6 +58,7 @@ export async function saveBlockchain(data, PORT) {
 
   try {
     await fs.writeFile(dbFilePath, JSON.stringify(data, null, 2));
+    await saveBlockchainToMongo(data);
   } catch (error) {
     logError(error);
   }
