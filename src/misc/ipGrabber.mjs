@@ -28,7 +28,7 @@ export const saveIPToEnv = () => {
   const envPath = "./.env";
   const localIP = getLocalIP();
   if (localIP) {
-    const envContent = `NODE_MASTER_SERVER_URL=${localIP}\nNODE_MASTER_SERVER_PORT=8080`;
+    const envContent = `NODE_MASTER_SERVER_URL=${localIP}\nNODE_MASTER_SERVER_PORT=8080\nJWT_SECRET=424c6e997f3a21017769f113168b672af39323fe3688c9982a42e7c255965edd`;
     fs.writeFileSync(envPath, envContent, { flag: "w" });
     console.log(`Local IP saved to ${envPath}`);
     process.exit(0);
