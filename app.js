@@ -11,7 +11,6 @@ import userRoutes from "./src/backend/routes/userRoutes.js";
 import cors from "cors";
 import { rateLimit } from "express-rate-limit";
 import { xss } from "express-xss-sanitizer";
-import mongoSanitize from "express-mongo-sanitize";
 
 import connectDb from "./src/backend/database/db.js";
 

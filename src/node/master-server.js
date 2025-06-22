@@ -17,7 +17,6 @@ import {
 } from "../blockchain/services/blockchainService.js";
 import { getBalance } from "../blockchain/services/blockchainService.js";
 import { saveBlockchain } from "../blockchain/database/blockchainDB.js";
-import { createBlock } from "../blockchain/services/blockchainService.js";
 
 import dotenv from "dotenv";
 dotenv.config();
