@@ -102,7 +102,7 @@ src
 
 ```bash
 git clone https://github.com/Ferenc02/Own-cryptocurrency-project
-cd skandichain
+cd Own-cryptocurrency-project
 ```
 
 ### 2. Install Dependencies
