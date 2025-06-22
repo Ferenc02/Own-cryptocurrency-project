@@ -1,3 +1,15 @@
+/**
+ * @file p2p.js
+ * @description
+ * This file implements the peer-to-peer (P2P) node logic for a custom cryptocurrency network.
+ * Each node runs a WebSocket server to accept connections from peers and communicates with a central master server.
+ * The node handles mining requests, transaction management, balance queries, and blockchain synchronization.
+ * It maintains a local transaction pool, processes new blocks, and ensures its blockchain state is kept up-to-date
+ * with the master server. The node registers itself with the master server on startup and can send or receive
+ * blockchain and transaction data to/from peers. This module is responsible for the decentralized operation
+ * of individual nodes, enabling distributed consensus and transaction propagation across the network.
+ * For further details, refer to the project documentation and architecture overview.
+ */
 import dotenv from "dotenv";
 dotenv.config();
 import WebSocket, { WebSocketServer } from "ws";

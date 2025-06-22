@@ -1,3 +1,15 @@
+/**
+ * @file master-server.js
+ * @description
+ * This file implements the core logic for the master server in a custom cryptocurrency network.
+ * The master server acts as the central coordinator, managing peer node connections, maintaining
+ * and distributing the list of connected peers, and synchronizing blockchain data across the network.
+ * It uses WebSockets to communicate with nodes, handles peer registration, broadcasts blockchain updates,
+ * and ensures all nodes are kept up-to-date with the latest state of the blockchain and peer network.
+ * This module is the "brain" of the master server, orchestrating the overall network topology and data consistency.
+ * For more details, refer to the documentation in the README file and the architecture diagram in architecture.txt file.
+ **/
+
 import WebSocket, { WebSocketServer } from "ws";
 import {
   generateKeyAndAddress,

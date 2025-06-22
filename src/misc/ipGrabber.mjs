@@ -1,3 +1,8 @@
+/**
+ * Utility to grab the local IPv4 address and save it to a .env file.
+ * Used for configuring the master server URL in a local environment.
+ */
+
 import os from "os";
 import fs from "fs";
 import { exit } from "process";
