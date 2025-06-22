@@ -127,11 +127,13 @@ If you don't know your local ipv4 address, you can find it and save it to .env b
 npm run dev:ip
 ```
 
-### 4. Setup MongoDB connection and create a database named `db` with collection `users`:
+### 4. Setup MongoDB connection and create a database named `db` with collection `users` and `blockchain`:
 
 ```plaintext
 mongodb://127.0.0.1:27017/db/
 mongodb://127.0.0.1:27017/db/users
+mongodb://127.0.0.1:27017/db/blockchain
+
 ```
 
 ### 5. Start Servers
