@@ -56,9 +56,9 @@ if (args.includes("--node")) {
 
   app.use(errorHandler);
 
-  app.listen(randomPort + 1, () => {
+  app.listen(randomPort, () => {
     console.log(
-      `Express server running on  http://${localIP + ":" + (randomPort + 1)}`
+      `Express server running on  http://${localIP + ":" + randomPort}`
     );
   });
 }

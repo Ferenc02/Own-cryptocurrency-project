@@ -108,7 +108,11 @@ const requestTransactionsFromNodes = async () => {
 };
 
 const requestBlocksFromNodes = async () => {
+  // Since each node has the same transactions and blocks,
+  // we can select a random node to request the blockchain from.
+  // To avoid unnecessary load on the network.
   let node = selectRandomNode();
+
   if (node.ws === "connected") {
     return new Promise((resolve, reject) => {
       let newSocket = new WebSocket(`ws://${node.address}:${node.port}`);
