@@ -5,7 +5,6 @@
 
 import os from "os";
 import fs from "fs";
-import { exit } from "process";
 const getLocalIP = () => {
   const ipAddresses = [];
   const interfaces = os.networkInterfaces();
